@@ -66,13 +66,13 @@ func ReadSystemWords() ([]string, error) {
 
 //AnagramMap holds construct of sorted characters of anagrams to all the possible words in the 'mapping' field
 type AnagramMap struct {
-	mapping map[string][]string
+	Mapping map[string][]string
 }
 
 //AnagramOfWord takes a word and returns a separate anagram of it
 func (a *AnagramMap) AnagramOfWord(word string) string {
 	wordKey := SortWord(word)
-	list := a.mapping[wordKey]
+	list := a.Mapping[wordKey]
 	if len(list) <= 1 {
 		return word
 	} else {
