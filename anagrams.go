@@ -1,6 +1,7 @@
 package anagrams
 
 import (
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"sort"
@@ -71,6 +72,7 @@ type AnagramMap struct {
 
 //AnagramOfWord takes a word and returns a separate anagram of it
 func (a *AnagramMap) AnagramOfWord(word string) string {
+	word = strings.ToLower(word)
 	wordKey := SortWord(word)
 	list := a.Mapping[wordKey]
 	if len(list) <= 1 {
@@ -89,7 +91,9 @@ func (a *AnagramMap) AnagramOfWord(word string) string {
 
 func (a *AnagramMap) AnagramSentence(sent []string) []string {
 	var ret []string
+	fmt.Println(sent)
 	for _, s := range sent {
+		fmt.Println(s)
 		ret = append(ret, a.AnagramOfWord(s))
 	}
 	return ret
@@ -98,6 +102,7 @@ func (a *AnagramMap) AnagramSentence(sent []string) []string {
 func AnagramList(words []string) map[string][]string {
 	anagrams := make(map[string][]string)
 	for _, w := range words {
+		w = strings.ToLower(w)
 		wordKey := SortWord(w)
 		anagrams[wordKey] = append(anagrams[wordKey], w)
 	}

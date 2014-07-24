@@ -89,7 +89,7 @@ func TestAnagramMap(t *testing.T) {
 	}
 	anagrams := AnagramList(words)
 
-	AM := &AnagramMap{mapping: anagrams}
+	AM := &AnagramMap{Mapping: anagrams}
 	word := "ropes"
 	ana := AM.AnagramOfWord(word)
 	if ana == word {
@@ -105,11 +105,26 @@ func TestAnagramMap(t *testing.T) {
 		t.Errorf("There is no word that is all 'j's...")
 	}
 
+	fmt.Printf("%#v\n", AM.Mapping["bnorw"])
 	sentence := [...]string{"The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"}
 	s := sentence[:]
 	anasent := AM.AnagramSentence(s)
 	if anasent[len(anasent)-1] != "god" {
 		fmt.Printf("returned sentence: %#v\n", anasent)
 		t.Errorf("'god' should be replaced with a 'dog'")
+	}
+}
+
+func TestAnagramMapCaps(t *testing.T) {
+	words := []string{"HihI", "America!", "fatcamp", "WHO", "how"}
+	anagrams := AnagramList(words)
+	AM := &AnagramMap{Mapping: anagrams}
+	fmt.Printf("%#v", AM.Mapping)
+
+	if len(AM.Mapping["how"]) != 2 {
+		t.Errorf("'WHO' not correctly lowercased")
+	}
+	if AM.Mapping["aacfmpt"][0] != "fatcamp" {
+		t.Errorf("Basic anagram mapping failed: %#v", AM.Mapping)
 	}
 }
