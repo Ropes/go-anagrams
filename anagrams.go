@@ -55,6 +55,8 @@ func Anagram1(x string, y string) bool {
 	return false
 }
 
+//ReadSystemWords parses the system word list(/usr/share/dict/words) and returns
+//an array of strings.
 func ReadSystemWords() ([]string, error) {
 	path := "/usr/share/dict/words"
 	contents, err := ioutil.ReadFile(path)
@@ -65,30 +67,37 @@ func ReadSystemWords() ([]string, error) {
 	return strings.Split(string(contents), "\n"), nil
 }
 
-//AnagramMap holds construct of sorted characters of anagrams to all the possible words in the 'mapping' field
+//AnagramMap holds construct of sorted characters of anagrams to all the
+//possible words in the 'Mapping' field.  Mapping field holds a 'set' map to
+//allow fast lookup of unique words possible.
 type AnagramMap struct {
-	Mapping map[string][]string
+	Mapping map[string]map[string]bool
 }
 
 //AnagramOfWord takes a word and returns a separate anagram of it
 func (a *AnagramMap) AnagramOfWord(word string) string {
 	word = strings.ToLower(word)
 	wordKey := SortWord(word)
-	list := a.Mapping[wordKey]
-	if len(list) <= 1 {
+	wordMap := a.Mapping[wordKey]
+	if len(wordMap) <= 1 {
 		return word
 	} else {
-		t := time.Now()
-		r := rand.New(rand.NewSource(t.UnixNano()))
-		for {
-			w := list[r.Intn(len(list))]
-			if w != word {
-				return w
+		uniqueWords := make([]string, 0)
+		for k, _ := range wordMap {
+			if k != word {
+				uniqueWords = append(uniqueWords, k)
 			}
 		}
+
+		t := time.Now()
+		r := rand.New(rand.NewSource(t.UnixNano()))
+		w := uniqueWords[r.Intn(len(uniqueWords))]
+		return w
 	}
 }
 
+//AnagramSentence takes a list of words and replaces each word with
+//anagram of the word if possible.
 func (a *AnagramMap) AnagramSentence(sent []string) []string {
 	var ret []string
 	fmt.Println(sent)
@@ -99,12 +108,19 @@ func (a *AnagramMap) AnagramSentence(sent []string) []string {
 	return ret
 }
 
-func AnagramList(words []string) map[string][]string {
-	anagrams := make(map[string][]string)
+//AnagramList is an ill named function which creates the mapping of character
+//posibilities to their possible anagrams.
+func AnagramList(words []string) map[string]map[string]bool {
+	anagrams := make(map[string]map[string]bool)
 	for _, w := range words {
 		w = strings.ToLower(w)
 		wordKey := SortWord(w)
-		anagrams[wordKey] = append(anagrams[wordKey], w)
+		if anagrams[wordKey] != nil {
+			anagrams[wordKey][w] = true
+		} else {
+			anagrams[wordKey] = make(map[string]bool)
+			anagrams[wordKey][w] = true
+		}
 	}
 	return anagrams
 }

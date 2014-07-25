@@ -3,6 +3,8 @@ package anagrams
 import (
 	"fmt"
 	"testing"
+
+	"github.com/ropes/learngo/anagrams"
 )
 
 func TestLengthChk(t *testing.T) {
@@ -67,7 +69,7 @@ func TestAnagramList(t *testing.T) {
 	if err != nil {
 		t.Log("No error reading word list")
 	}
-	anagrams := AnagramList(words)
+	anagrams := anagrams.AnagramList(words)
 	if len(anagrams) < 5000 {
 		t.Log(anagrams["acr"])
 		t.Errorf("Number of anagram combinations dubiously low for number of words..")
@@ -89,7 +91,7 @@ func TestAnagramMap(t *testing.T) {
 	}
 	anagrams := AnagramList(words)
 
-	AM := &AnagramMap{Mapping: anagrams}
+	AM := &AnagramMap{anagrams}
 	word := "ropes"
 	ana := AM.AnagramOfWord(word)
 	if ana == word {
@@ -105,7 +107,7 @@ func TestAnagramMap(t *testing.T) {
 		t.Errorf("There is no word that is all 'j's...")
 	}
 
-	fmt.Printf("%#v\n", AM.Mapping["bnorw"])
+	//fmt.Printf("%#v\n", AM.Mapping["bnorw"])
 	sentence := [...]string{"The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"}
 	s := sentence[:]
 	anasent := AM.AnagramSentence(s)
@@ -118,13 +120,12 @@ func TestAnagramMap(t *testing.T) {
 func TestAnagramMapCaps(t *testing.T) {
 	words := []string{"HihI", "America!", "fatcamp", "WHO", "how"}
 	anagrams := AnagramList(words)
-	AM := &AnagramMap{Mapping: anagrams}
-	fmt.Printf("%#v", AM.Mapping)
+	AM := AnagramMap{Mapping: anagrams}
 
 	if len(AM.Mapping["how"]) != 2 {
 		t.Errorf("'WHO' not correctly lowercased")
 	}
-	if AM.Mapping["aacfmpt"][0] != "fatcamp" {
+	if AM.Mapping["aacfmpt"]["fatcamp"] != true {
 		t.Errorf("Basic anagram mapping failed: %#v", AM.Mapping)
 	}
 }
