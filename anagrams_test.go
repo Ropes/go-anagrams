@@ -3,8 +3,6 @@ package anagrams
 import (
 	"fmt"
 	"testing"
-
-	"github.com/ropes/learngo/anagrams"
 )
 
 func TestLengthChk(t *testing.T) {
@@ -69,7 +67,7 @@ func TestAnagramList(t *testing.T) {
 	if err != nil {
 		t.Log("No error reading word list")
 	}
-	anagrams := anagrams.AnagramList(words)
+	anagrams := AnagramList(words)
 	if len(anagrams) < 5000 {
 		t.Log(anagrams["acr"])
 		t.Errorf("Number of anagram combinations dubiously low for number of words..")
