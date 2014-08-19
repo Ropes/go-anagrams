@@ -67,6 +67,17 @@ func ReadSystemWords() ([]string, error) {
 	return strings.Split(string(contents), "\n"), nil
 }
 
+//ReadCustomWords parses list of words from a file given in the 'path' parameter.
+//Panics if the custom path fails to load a file
+func ReadCustomWords(path string) ([]string, error) {
+	contents, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+		return nil, err
+	}
+	return strings.Split(string(contents), "\n"), nil
+}
+
 //AnagramMap holds construct of sorted characters of anagrams to all the
 //possible words in the 'Mapping' field.  Mapping field holds a 'set' map to
 //allow fast lookup of unique words possible.
