@@ -10,12 +10,12 @@ func TestLengthChk(t *testing.T) {
 	y := "hihii"
 	z := "ihih"
 
-	result := LenCheck(x, y)
+	result := lenCheck(x, y)
 	if result == true {
 		t.Errorf("Strings of different length but true returned")
 	}
 
-	result = LenCheck(x, z)
+	result = lenCheck(x, z)
 	if result == false {
 		t.Errorf("Strings of same length but false returned..")
 	}
@@ -25,7 +25,7 @@ func TestRuneSliceSort(t *testing.T) {
 	x := "hihi"
 	y := "hhii"
 
-	result := SortWord(x)
+	result := sortWord(x)
 	if result != y {
 		t.Errorf("Word wasn't sorted properly: %s", result)
 	}
@@ -34,7 +34,7 @@ func TestRuneSliceSort(t *testing.T) {
 func TestRuneSliceSort2(t *testing.T) {
 	x := "watcatw"
 	y := "aacttww"
-	result := SortWord(x)
+	result := sortWord(x)
 
 	if result != y {
 		t.Errorf("Word wasn't sorted properly: %s", result)
@@ -45,7 +45,7 @@ func TestAnagram1(t *testing.T) {
 	x := "heater"
 	y := "reheat"
 
-	result := Anagram1(x, y)
+	result := anagram1(x, y)
 	if result == false {
 		t.Error("Anagram not detected correctly")
 	}
@@ -62,12 +62,42 @@ func TestReadWords(t *testing.T) {
 	}
 }
 
+func TestNewAnagramMap(t *testing.T) {
+	var testtable = []struct {
+		wordpath string
+		works    bool
+	}{
+		{
+			wordpath: "",
+			works:    true,
+		},
+		{
+			wordpath: "/usr/share/dict/words",
+			works:    true,
+		},
+		{
+			wordpath: "/dev/null",
+			works:    false,
+		},
+	}
+
+	for _, tt := range testtable {
+		am, err := NewAnagramMap(tt.wordpath)
+		if err != nil && tt.works {
+			t.Errorf("error[%v] was not excpected for '%s'", err, tt.wordpath)
+		}
+		if am == nil && !tt.works {
+			t.Errorf("anagrammap should have been created for %s", tt.wordpath)
+		}
+	}
+}
+
 func TestAnagramList(t *testing.T) {
 	words, err := ReadSystemWords()
 	if err != nil {
 		t.Log("No error reading word list")
 	}
-	anagrams := AnagramList(words)
+	anagrams := anagramList(words)
 	if len(anagrams) < 5000 {
 		t.Log(anagrams["acr"])
 		t.Errorf("Number of anagram combinations dubiously low for number of words..")
@@ -87,7 +117,7 @@ func TestAnagramMap(t *testing.T) {
 	if err != nil {
 		t.Log("No error reading word list")
 	}
-	anagrams := AnagramList(words)
+	anagrams := anagramList(words)
 
 	AM := &AnagramMap{anagrams}
 	word := "ropes"
@@ -117,7 +147,7 @@ func TestAnagramMap(t *testing.T) {
 
 func TestAnagramMapCaps(t *testing.T) {
 	words := []string{"HihI", "America!", "fatcamp", "WHO", "how"}
-	anagrams := AnagramList(words)
+	anagrams := anagramList(words)
 	AM := AnagramMap{Mapping: anagrams}
 
 	if len(AM.Mapping["how"]) != 2 {
